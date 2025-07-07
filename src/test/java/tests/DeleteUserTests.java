@@ -1,7 +1,6 @@
 package tests;
 
 import io.qameta.allure.*;
-import io.restassured.response.Response;
 import models.UserBodyModel;
 import models.UserResponseModel;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +18,7 @@ import static specs.Spec.responseSpecStatusCode;
 
 @Tag("all_reqres_api_tests")
 @DisplayName("Удаление пользователя")
+@Owner("Victalina")
 @Epic("API reqres.in")
 @Story("Удаление пользователя")
 @Feature("DELETE запрос удаления пользователя")
@@ -26,7 +26,6 @@ public class DeleteUserTests extends TestBase {
 
   @Test
   @DisplayName("Успешное удаление пользователя")
-  @Owner("Victalina")
   @Severity(SeverityLevel.CRITICAL)
   void deleteUserTest() {
 
@@ -50,12 +49,11 @@ public class DeleteUserTests extends TestBase {
 
     int id = response1.getId();
 
-    Response response2 = step("Отправить DELETE запрос на удаление созданного пользователя с id = " + id, () ->
+    step("Отправить DELETE запрос на удаление созданного пользователя с id = " + id, () ->
             given(requestSpec)
                     .when()
                     .delete("/users" + id)
                     .then()
-                    .spec(responseSpecStatusCode(204))
-                    .extract().response());
+                    .spec(responseSpecStatusCode(204)));
   }
 }

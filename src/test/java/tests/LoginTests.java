@@ -1,7 +1,6 @@
 package tests;
 
 import io.qameta.allure.*;
-import io.restassured.response.Response;
 import models.ErrorResponseModel;
 import models.LoginBodyModel;
 import models.LoginResponseModel;
@@ -19,11 +18,12 @@ import static org.hamcrest.Matchers.notNullValue;
 import static specs.Spec.requestSpec;
 import static specs.Spec.responseSpecStatusCode;
 
-@Tags ({
-  @Tag("all_reqres_api_tests"),
-  @Tag("login_reqres_api_tests")
+@Tags({
+        @Tag("all_reqres_api_tests"),
+        @Tag("login_reqres_api_tests")
 })
 @DisplayName("Логин пользователя")
+@Owner("Victalina")
 @Epic("API reqres.in")
 @Story("Логин пользователя")
 @Feature("POST запрос логин пользователя")
@@ -31,7 +31,6 @@ public class LoginTests extends TestBase {
 
   @Test
   @DisplayName("Успешный логин пользователя")
-  @Owner("Victalina")
   @Severity(SeverityLevel.BLOCKER)
   void successfulLoginTest() {
 
@@ -54,28 +53,26 @@ public class LoginTests extends TestBase {
 
   @Test
   @DisplayName("Неуспешный логин пользователя - отсутствует email и password")
-  @Owner("Victalina")
   @Severity(SeverityLevel.CRITICAL)
   void unsuccessfulLoginMissingEmailAndPasswordTest() {
     LoginBodyModel authData = new LoginBodyModel("", "");
 
     ErrorResponseModel response = step("Отправить запрос POST на логин пользователя с пустыми полями email и password",
             () ->
-            given(requestSpec)
-                    .body(authData)
-                    .contentType(JSON)
-                    .when()
-                    .post("/login")
-                    .then()
-                    .spec(responseSpecStatusCode(400))
-                    .extract().as(ErrorResponseModel.class));
+                    given(requestSpec)
+                            .body(authData)
+                            .contentType(JSON)
+                            .when()
+                            .post("/login")
+                            .then()
+                            .spec(responseSpecStatusCode(400))
+                            .extract().as(ErrorResponseModel.class));
     step("Проверить ответ неуспешного логина пользователя", () ->
             assertThat(response.getError(), is("Missing email or username")));
   }
 
   @Test
   @DisplayName("Неуспешный логин несуществующего пользователя")
-  @Owner("Victalina")
   @Severity(SeverityLevel.CRITICAL)
   void userNotFoundTest() {
 
@@ -96,7 +93,6 @@ public class LoginTests extends TestBase {
 
   @Test
   @DisplayName("Неуспешный логин пользователя - отсутствует password")
-  @Owner("Victalina")
   @Severity(SeverityLevel.CRITICAL)
   void missingPasswordTest() {
 
@@ -118,7 +114,6 @@ public class LoginTests extends TestBase {
 
   @Test
   @DisplayName("Неуспешный логин пользователя - отсутствует email")
-  @Owner("Victalina")
   @Severity(SeverityLevel.CRITICAL)
   void missingLoginTest() {
 
@@ -139,32 +134,28 @@ public class LoginTests extends TestBase {
 
   @Test
   @DisplayName("Неуспешный логин пользователя - некорректное тело запроса")
-  @Owner("Victalina")
   @Severity(SeverityLevel.NORMAL)
   void wrongBodyTest() {
     String authData = "%}";
-    Response response = step("Отправить POST запрос на логин пользователя с некорректным телом запроса", () ->
+    step("Отправить POST запрос на логин пользователя с некорректным телом запроса", () ->
             given(requestSpec)
                     .body(authData)
                     .contentType(JSON)
                     .when()
                     .post("/login")
                     .then()
-                    .spec(responseSpecStatusCode(400))
-                    .extract().response());
+                    .spec(responseSpecStatusCode(400)));
   }
 
   @Test
   @DisplayName("Неуспешный логин пользователя - отсутствует тело запроса и ContentType")
-  @Owner("Victalina")
   @Severity(SeverityLevel.NORMAL)
   void missingRequestBodyTest() {
-    Response response = step("Отправить POST запрос на логин пользователя без тела запроса и ContentType", () ->
+    step("Отправить POST запрос на логин пользователя без тела запроса и ContentType", () ->
             given(requestSpec)
                     .when()
                     .post("/login")
                     .then()
-                    .spec(responseSpecStatusCode(415))
-                    .extract().response());
+                    .spec(responseSpecStatusCode(415)));
   }
 }

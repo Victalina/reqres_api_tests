@@ -1,7 +1,6 @@
 package tests;
 
 import io.qameta.allure.*;
-import io.restassured.response.Response;
 import models.ResourceDataModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -16,6 +15,7 @@ import static specs.Spec.responseSpecStatusCode;
 
 @Tag("all_reqres_api_tests")
 @DisplayName("Получение данных ресурса")
+@Owner("Victalina")
 @Epic("API reqres.in")
 @Story("Получение данных ресурса")
 @Feature("GET запрос получения данных ресурса")
@@ -24,7 +24,6 @@ public class GetSingleResourceTests extends TestBase {
 
   @Test
   @DisplayName("Получение данных существующего ресурса")
-  @Owner("Victalina")
   @Severity(SeverityLevel.NORMAL)
   void getSingleResourceTest() {
     int id = 2;
@@ -48,17 +47,15 @@ public class GetSingleResourceTests extends TestBase {
 
   @Test
   @DisplayName("Получение данных несуществующего ресурса - ресурс не найден")
-  @Owner("Victalina")
   @Severity(SeverityLevel.MINOR)
   void singleResourceNotFoundTest() {
     int id = 23;
 
-    Response response = step("Отправить GET запрос для несуществующего ресурса с id = " + id, () ->
+    step("Отправить GET запрос для несуществующего ресурса с id = " + id, () ->
             given(requestSpec)
                     .when()
                     .get("/unknown/" + id)
                     .then()
-                    .spec(responseSpecStatusCode(404))
-                    .extract().response());
+                    .spec(responseSpecStatusCode(404)));
   }
 }
